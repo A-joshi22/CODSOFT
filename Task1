@@ -1,57 +1,72 @@
-import random
+import java.util.Scanner;
+import java.util.Random;
 
-def play_game():
-    # Step 1: Generate a random number within a specified range (1 to 100)
-    number_to_guess = random.randint(1, 100)
-    attempts_left = 10  # Limit the number of attempts to 10
-    attempts_taken = 0
+public class NumberGuessingGame {
 
-    print("Welcome to the Number Guessing Game!")
-    print("I have selected a number between 1 and 100. You have 10 attempts to guess it.")
+    // Method to play a single round of the guessing game
+    public static int playRound(int maxAttempts) {
+        // Generate a random number between 1 and 100
+        Random random = new Random();
+        int numberToGuess = random.nextInt(100) + 1; // Random number between 1 and 100
+        int attempts = 0;
+        boolean guessedCorrectly = false;
 
-    # Step 2 and 3: Prompt the user to guess the number and compare the guess
-    while attempts_left > 0:
-        try:
-            guess = int(input(f"Attempt {attempts_taken + 1} - Guess the number: "))
-        except ValueError:
-            print("Please enter a valid integer.")
-            continue
+        Scanner scanner = new Scanner(System.in);
 
-        attempts_taken += 1
-        attempts_left -= 1
+        System.out.println("I have selected a number between 1 and 100. You have " + maxAttempts + " attempts to guess it.");
 
-        # Step 3: Provide feedback
-        if guess < number_to_guess:
-            print("Your guess is too low!")
-        elif guess > number_to_guess:
-            print("Your guess is too high!")
-        else:
-            print(f"Congratulations! You've guessed the correct number {number_to_guess} in {attempts_taken} attempts.")
-            return attempts_taken  # User guessed correctly, return attempts taken
-    
-    print(f"Sorry! You've run out of attempts. The correct number was {number_to_guess}.")
-    return attempts_taken  # Return attempts if user fails to guess correctly
+        // Step 2, 3: Repeat prompt for guesses until the user guesses correctly or exceeds max attempts
+        while (attempts < maxAttempts && !guessedCorrectly) {
+            System.out.print("Enter your guess: ");
+            int userGuess = scanner.nextInt();
+            attempts++;
 
-def main():
-    total_score = 0
-    rounds_played = 0
+            // Step 3: Provide feedback on guess
+            if (userGuess < numberToGuess) {
+                System.out.println("Your guess is too low!");
+            } else if (userGuess > numberToGuess) {
+                System.out.println("Your guess is too high!");
+            } else {
+                guessedCorrectly = true;
+                System.out.println("Congratulations! You've guessed the correct number " + numberToGuess + " in " + attempts + " attempts.");
+            }
+        }
 
-    # Step 6: Option for multiple rounds
-    while True:
-        rounds_played += 1
-        attempts_taken = play_game()
-        score = max(1, 11 - attempts_taken)  # Score 1 for 10 or more attempts, higher for fewer attempts
-        total_score += score
+        if (!guessedCorrectly) {
+            System.out.println("Sorry! You've run out of attempts. The correct number was " + numberToGuess + ".");
+        }
 
-        # Step 7: Display score
-        print(f"Your score for this round: {score}")
-        print(f"Total score after {rounds_played} rounds: {total_score}")
-        
-        # Ask if the user wants to play another round
-        play_again = input("Do you want to play again? (y/n): ").strip().lower()
-        if play_again != 'y':
-            print(f"Thanks for playing! Your final score is: {total_score}")
-            break
+        return guessedCorrectly ? maxAttempts - attempts + 1 : 0; // Calculate score based on attempts
+    }
 
-if _name_ == "_main_":
-    main()
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int totalScore = 0;
+        int roundsPlayed = 0;
+        int maxAttempts = 10;
+
+        // Step 6: Allow the user to play multiple rounds
+        while (true) {
+            roundsPlayed++;
+            System.out.println("\nRound " + roundsPlayed + ":");
+            int roundScore = playRound(maxAttempts);
+
+            if (roundScore > 0) {
+                totalScore += roundScore;
+                System.out.println("Your score for this round: " + roundScore);
+            }
+
+            System.out.println("Your total score after " + roundsPlayed + " rounds: " + totalScore);
+
+            // Step 7: Ask if the user wants to play another round
+            System.out.print("Do you want to play another round? (y/n): ");
+            String playAgain = scanner.next().toLowerCase();
+
+            if (!playAgain.equals("y")) {
+                break;
+            }
+        }
+
+        System.out.println("Thanks for playing! Your final score is: " + totalScore);
+    }
+}
