@@ -1,0 +1,57 @@
+import random
+
+def play_game():
+    # Step 1: Generate a random number within a specified range (1 to 100)
+    number_to_guess = random.randint(1, 100)
+    attempts_left = 10  # Limit the number of attempts to 10
+    attempts_taken = 0
+
+    print("Welcome to the Number Guessing Game!")
+    print("I have selected a number between 1 and 100. You have 10 attempts to guess it.")
+
+    # Step 2 and 3: Prompt the user to guess the number and compare the guess
+    while attempts_left > 0:
+        try:
+            guess = int(input(f"Attempt {attempts_taken + 1} - Guess the number: "))
+        except ValueError:
+            print("Please enter a valid integer.")
+            continue
+
+        attempts_taken += 1
+        attempts_left -= 1
+
+        # Step 3: Provide feedback
+        if guess < number_to_guess:
+            print("Your guess is too low!")
+        elif guess > number_to_guess:
+            print("Your guess is too high!")
+        else:
+            print(f"Congratulations! You've guessed the correct number {number_to_guess} in {attempts_taken} attempts.")
+            return attempts_taken  # User guessed correctly, return attempts taken
+    
+    print(f"Sorry! You've run out of attempts. The correct number was {number_to_guess}.")
+    return attempts_taken  # Return attempts if user fails to guess correctly
+
+def main():
+    total_score = 0
+    rounds_played = 0
+
+    # Step 6: Option for multiple rounds
+    while True:
+        rounds_played += 1
+        attempts_taken = play_game()
+        score = max(1, 11 - attempts_taken)  # Score 1 for 10 or more attempts, higher for fewer attempts
+        total_score += score
+
+        # Step 7: Display score
+        print(f"Your score for this round: {score}")
+        print(f"Total score after {rounds_played} rounds: {total_score}")
+        
+        # Ask if the user wants to play another round
+        play_again = input("Do you want to play again? (y/n): ").strip().lower()
+        if play_again != 'y':
+            print(f"Thanks for playing! Your final score is: {total_score}")
+            break
+
+if _name_ == "_main_":
+    main()
